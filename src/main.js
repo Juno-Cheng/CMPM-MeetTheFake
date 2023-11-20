@@ -4,17 +4,13 @@ Slime Jumper
 27 Hours
 Creative tilt: 8/10
 
-In my game Slime Jumper game, I implemented 2 dimensional movement system that allowed the user to move around and jump. I also used the
-collision detection system to create floating platforms that the player must jump to as it slides. I am proud of all the visual aspects, as I 
-enjoy creating pixel art using asperite. I believe the most difficult part of this assignment was the collision/hitbox detection as
-well as the animation system.
 
 ****************************************************/
 let config = {
   type: Phaser.AUTO,
   width: 640,
   height: 290,
-  scene: [MenuScene, Play, HelpScene, Gameover],
+  scene: [MenuScene, Play, HighScore, Gameover],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH},
@@ -46,7 +42,7 @@ let score = 0;              // player's current score
 let highScore = 0;          // highest score achieved
 
 // reserve keyboard vars for input
-let keyUP, keyLEFT, keyRIGHT;
+let keyUP, keyLEFT, keyRIGHT, keySpace;
 
 // Game status flags
 let gameOver = false;      // track if the game is currently in an over state
