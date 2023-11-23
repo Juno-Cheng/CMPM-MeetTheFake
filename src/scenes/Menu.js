@@ -53,12 +53,12 @@ class MenuScene extends Phaser.Scene {
 
     // Draw the top border (yellow)
     const topBorder = this.add.graphics();
-    topBorder.fillStyle(topAndBottomHalfBorderColor, 1);
+    topBorder.fillStyle(bottomAndTopHalfBorderColor, 1);
     topBorder.fillRect(0, 0, canvasWidth, borderWidth);
 
     // Draw the bottom border (blue)
     const bottomBorder = this.add.graphics();
-    bottomBorder.fillStyle(bottomAndTopHalfBorderColor, 1);
+    bottomBorder.fillStyle(topAndBottomHalfBorderColor, 1);
     bottomBorder.fillRect(0, canvasHeight - borderWidth, canvasWidth, borderWidth);
 
     // Draw the top half of the left border (blue)
