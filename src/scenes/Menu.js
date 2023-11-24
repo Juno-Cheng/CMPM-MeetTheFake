@@ -7,6 +7,10 @@ class MenuScene extends Phaser.Scene {
       // Load assets
       this.load.image('burgerboss', './assets/Images/bossStart.png');
       this.load.audio('buttonPress', './assets/Audio/press.wav');
+      this.load.audio('backgroundMenu', './assets/Audio/backgroundMenu.wav'); 
+
+      this.load.image('mute', './assets/Images/MuteIcon2.png');
+      this.load.image('unmute', './assets/Images/MuteIcon.png');
   }
 
   create() {
@@ -82,12 +86,36 @@ class MenuScene extends Phaser.Scene {
     rightBottomHalfBorder.fillRect(canvasWidth - borderWidth, halfHeight, borderWidth, halfHeight);
 
 
-
     // Play background music
-    let music = this.sound.add('backgroundMusic');
-    music.play({
+    let music = this.sound.add('backgroundMenu', {
       loop: true // This will make the track loop
     });
+
+    let muteButton = this.add.image(config.width/6 - 50, config.height - 20, 'mute').setInteractive();
+    let isMuted = false;
+    muteButton.on('pointerdown', () => {
+      // Check if the audio context is suspended
+      if (this.sound.context.state === 'suspended') {
+        this.sound.context.resume();
+      }
+  
+      // Toggle the music play/mute
+      if (!isMuted) {
+        music.pause();
+        muteButton.setTexture('mute'); // Change button to 'mute' image
+      } else {
+        // If the music hasn't started yet, start it; otherwise resume it
+        if (music.isPaused) {
+          music.resume();
+        } else {
+          music.play();
+        }
+        muteButton.setTexture('unmute'); // Change button to 'unmute' image
+      }
+      // Flip the isMuted boolean
+      isMuted = !isMuted;
+    });
+  
 
     keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   }
@@ -97,11 +125,8 @@ class MenuScene extends Phaser.Scene {
     //If Spacebar is Pressed
     if (Phaser.Input.Keyboard.JustDown(keySpace)) {
       this.sound.play('buttonPress');
-      this.scene.start("playScene");
+      this.scene.start("HelpScene");
     }
-
-
-
   }
 
 
