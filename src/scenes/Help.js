@@ -71,7 +71,7 @@ class HelpScene extends Phaser.Scene {
           });
       
 
-
+          keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     update(){
