@@ -18,6 +18,39 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.moveSpeed = playerSpeed;
         this.jumpStrength = playerJumpForce;
         this.jumpSound = null;
+
+        //Add statemachine
+
+    }
+
+    initAnimations() {
+        this.scene.anims.create({
+            key: 'idle',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { frames: [0, 3] }),
+            frameRate: 3,
+            repeat: -1
+        });
+
+        this.scene.anims.create({
+            key: 'walk',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.scene.anims.create({
+            key: 'jump',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { start: 6, end: 7 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.scene.anims.create({
+            key: 'attack',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { start: 8, end: 9 }),
+            frameRate: 10,
+            repeat: 0
+        });
     }
 
 
@@ -25,24 +58,26 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     update(keys) {
         if (keys.keyLEFT.isDown) {
             this.setVelocityX(-this.moveSpeed);  // move left
+            this.anims.play('walk', true);      // play walk animation
+            this.setFlipX(true);                // flip the sprite to face left
         } else if (keys.keyRIGHT.isDown) {
-            this.setVelocityX(this.moveSpeed);   // move right
+            this.setVelocityX(this.moveSpeed);  // move right
+            this.anims.play('walk', true);      // play walk animation
+            this.setFlipX(false);               // flip the sprite to face right
         } else {
-            this.setVelocityX(0);  // stop moving horizontally
+            this.setVelocityX(0);               // stop moving horizontally
+            this.anims.play('idle', true);      // play idle animation
         }
 
-        // Player jump. The player can jump while touching the ground
-        if (Phaser.Input.Keyboard.JustDown(keys.keyUP) && this.body.touching.down) {
-            this.anims.play('jumping', true);
-            
-            this.scene.time.delayedCall(500, () => {
-                this.setVelocityY(this.jumpStrength); // Apply the jump velocity
-                if (this.jumpSound) {
-                    this.jumpSound.play();
-                }
-            }, [], this);
-        
+        // Handle jumping
+        if (keys.keyUP.isDown && this.body.touching.down) {
+            this.setVelocityY(-this.jumpStrength);
+            this.anims.play('jump', true);      // play jump animation
         }
+
+        
+
+        
     }
 }
 
