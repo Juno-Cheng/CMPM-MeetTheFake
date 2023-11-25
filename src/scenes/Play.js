@@ -35,8 +35,8 @@ class Play extends Phaser.Scene {
         layer.setCollisionByExclusion(-1, true);
 
         this.physics.world.createDebugGraphic();
-
-       
+        this.physics.world.bounds.width = map.widthInPixels;
+        this.physics.world.bounds.height = map.heightInPixels;
 
         //==============================================================
 
@@ -100,6 +100,10 @@ class Play extends Phaser.Scene {
                 this.player.isTouchingGround = true;
             }
         });
+
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
+        this.cameras.main.setZoom(1.5);
 
 
         
