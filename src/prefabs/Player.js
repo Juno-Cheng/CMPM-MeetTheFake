@@ -11,13 +11,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // Player physics properties. Adjust the body settings here as needed
         this.setCollideWorldBounds(true); // Player cannot move out of the game world
 
-        this.body.setSize(this.width * 0.8, this.height * .1); 
-        this.body.setOffset(this.width * 0.1, this.height * 0.1); 
+        this.body.setSize(this.width * 1, this.height * 1); 
+        //this.body.setOffset(this.width * 0.1, this.height * 1); 
 
         // Initialize player properties from global variables
         this.moveSpeed = playerSpeed;
         this.jumpStrength = playerJumpForce;
         this.jumpSound = null;
+        this.isTouchingGround = true;
 
         //Add statemachine
 
@@ -25,15 +26,31 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     initAnimations() {
         this.scene.anims.create({
-            key: 'idle',
-            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { frames: [0, 3] }),
+            key: 'idle-right',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { frames: [0] }),
             frameRate: 3,
             repeat: -1
         });
 
         this.scene.anims.create({
-            key: 'walk',
-            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { start: 0, end: 5 }),
+            key: 'idle-left',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { frames: [3] }),
+            frameRate: 3,
+            repeat: -1
+        });
+
+
+        this.scene.anims.create({
+            key: 'walk-right',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { start: 0, end: 2 }),
+            frameRate: 10,
+            repeat: -1
+        });
+    
+        // Walking left animation: tiles 4-6
+        this.scene.anims.create({
+            key: 'walk-left',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { start: 3, end: 5 }),
             frameRate: 10,
             repeat: -1
         });
@@ -57,25 +74,37 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // The keys object is expected to contain keys: keyLEFT, keyRIGHT, keyUP
     update(keys) {
         if (keys.keyLEFT.isDown) {
-            this.setVelocityX(-this.moveSpeed);  // move left
-            this.anims.play('walk', true);      // play walk animation
-            this.setFlipX(true);                // flip the sprite to face left
+            this.setVelocityX(-this.moveSpeed);
+            this.anims.play('walk-left', true);
+            this.lastDirection = 'left';
         } else if (keys.keyRIGHT.isDown) {
-            this.setVelocityX(this.moveSpeed);  // move right
-            this.anims.play('walk', true);      // play walk animation
-            this.setFlipX(false);               // flip the sprite to face right
+            this.setVelocityX(this.moveSpeed);
+            this.anims.play('walk-right', true);
+            this.lastDirection = 'right';
         } else {
-            this.setVelocityX(0);               // stop moving horizontally
-            this.anims.play('idle', true);      // play idle animation
+            this.setVelocityX(0);
+            // Use if statements to determine which idle animation to play
+            if (this.lastDirection === 'left') {
+                this.anims.play('idle-left', true);
+            } else {
+                // Default to idle-right if lastDirection is not 'left'
+                this.anims.play('idle-right', true);
+            }
         }
-
+    
         // Handle jumping
-        if (keys.keyUP.isDown && this.body.touching.down) {
-            this.setVelocityY(-this.jumpStrength);
-            this.anims.play('jump', true);      // play jump animation
+        if (keys.keyUP.isDown && this.isTouchingGround) {
+            this.setVelocityY(this.jumpStrength);
+            this.anims.play('jump', true);
+            // The flag should be reset when the player jumps
+            this.isTouchingGround = false;
         }
 
-        
+        // Reset the isTouchingGround flag if the player is not on the ground
+        // This should be the only place where you set this to false
+        if (!this.body.blocked.down && this.body.velocity.y !== 0) {
+            this.isTouchingGround = false;
+        }
 
         
     }

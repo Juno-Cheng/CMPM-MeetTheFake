@@ -10,12 +10,16 @@ let config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 300 },
-      debug: false,
+      debug: true,
     },
   },
 };
 
 let game = new Phaser.Game(config);
+
+const tileHeight = 16; // height of one tile
+const buildingHeightInTiles = 25; 
+const groundLevel = config.height - (buildingHeightInTiles * tileHeight);
 
 // General UI sizes for any boundary or UI elements in the game
 let borderUISize = game.config.height / 15;

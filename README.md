@@ -2,8 +2,11 @@
 ---
 ## Overall Plan
 
-- Menu Done - Find Music/Fix Next Scene
-- 
+- Menu Done - [X]
+- Help Done - [X]
+- Game - Fix Camera/End of Game/Points/Value/Time - Unsure if I need should add more levels
+- Score - Add score menu that allows players to input score, if it max, it replaces top score
+
 
 
 ---
