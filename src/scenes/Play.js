@@ -20,6 +20,7 @@ class Play extends Phaser.Scene {
 
         this.score = 0;
         this.lives = 3;
+        this.remainingTime = 300;
     }
     
     create() {
@@ -72,20 +73,45 @@ class Play extends Phaser.Scene {
         const zoomFactor = cam.zoom;
         //==============================================================
 
-        this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
+        
+        this.scoreText = this.add.text(144, 96, 'Score: 0', { fontSize: '16px', fill: '#fff' });
         this.scoreText.setScrollFactor(0);  // Ensures the text doesn't scroll with the camera
 
         // Create a lives text object
-        this.livesText = this.add.text(16, 56, 'Lives: 3', { fontSize: '32px', fill: '#fff' });
+        this.livesText = this.add.text(144, 120, 'Lives: 3', { fontSize: '16px', fill: '#fff' });
         this.livesText.setScrollFactor(0); 
 
+        this.timerText = this.add.text(144, 144, 'Time: 300', { fontSize: '16px', fill: '#fff' });
+        this.timerText.setScrollFactor(0);
 
+        this.time.addEvent({
+            delay: 1000,
+            callback: this.updateTimer,
+            callbackScope: this,
+            loop: true
+        });
 
 
         //========================
         
 
         
+    }
+
+    updateTimer() {
+        this.remainingTime -= 1; // Decrement the remaining time by one second
+        this.timerText.setText('Time: ' + this.remainingTime);
+    
+        // If the countdown reaches zero, end the game
+        if (this.remainingTime <= 0) {
+            this.timeUp(); // Call a method to handle what happens when time is up
+        }
+    }
+
+    
+    timeUp() {
+        // Handle time up scenario, such as ending the game or transitioning to a game over scene
+        this.scene.start('gameOverScene');
     }
 
     update(){
@@ -100,5 +126,25 @@ class Play extends Phaser.Scene {
 
 
     }
+
+
+    increaseScore(points) {
+        this.score += points;
+        this.scoreText.setText('Score: ' + this.score);
+    }
+    
+    // Call this method when the player loses a life
+    loseLife() {
+        this.lives -= 1;
+        this.livesText.setText('Lives: ' + this.lives);
+    
+        // Check for game over condition
+        if (this.lives <= 0) {
+            // Handle game over (e.g., restart the scene or go to a game over scene)
+            this.scene.start('gameOverScene');
+        }
+    }
+
+
         
 }
