@@ -21,6 +21,8 @@ class Play extends Phaser.Scene {
         this.score = 0;
         this.lives = 3;
         this.remainingTime = 300;
+
+        this.load.audio('pickup', 'assets/Audio/pickup.wav');
     }
     
     create() {
@@ -55,7 +57,7 @@ class Play extends Phaser.Scene {
         this.keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.player = new Player(this, 100, 100, 'player');
+        this.player = new Player(this, 100, 50, 'player');
         this.player.initAnimations();
         this.cursors = this.input.keyboard.createCursorKeys();
         this.player.setBounce(0.1);
@@ -103,9 +105,10 @@ class Play extends Phaser.Scene {
 
         // Add each tomato object to the game
         pointsLayer.forEach(point => {
-            const pointSprite = this.tomatoes.create(point.x, point.y - map.tileHeight, 'tomato').setOrigin(0);
+            const pointSprite = this.tomatoes.create(point.x, point.y, 'tomato').setOrigin(0);
             pointSprite.body.setSize(point.width, point.height); // Adjust if your point objects have a specific size
         });
+        this.physics.add.overlap(this.player, this.tomatoes, this.collectTomato, null, this);
 
         
     }
@@ -151,6 +154,12 @@ class Play extends Phaser.Scene {
             // Handle game over (e.g., restart the scene or go to a game over scene)
             this.scene.start('gameOverScene');
         }
+    }
+
+    collectTomato(player, tomato) {
+        tomato.disableBody(true, true); // This hides and deactivates the tomato
+        this.increaseScore(10); // Increase the score by 10, for example
+        this.sound.play('pickup');
     }
 
 
