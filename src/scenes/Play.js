@@ -17,19 +17,28 @@ class Play extends Phaser.Scene {
             frameWidth: 16,
             frameHeight: 16
         });
+
+        this.score = 0;
+        this.lives = 3;
     }
     
     create() {
         
+        //Background
+        const map = this.make.tilemap({ key: "map", tileWidth: 16, tileHeight: 16});
         // Place the background image in our game world
         const backgroundImage = this.add.image(0, 0, 'background').setOrigin(0, 0);
         // Scale the image to better match our game's resolution
         backgroundImage.displayWidth = this.sys.game.config.width;
         backgroundImage.displayHeight = this.sys.game.config.height;
-        
+
+        this.backgroundTileSprite = this.add.tileSprite(0, 0, map.widthInPixels,  this.sys.game.config.height, 'background').setOrigin(0, 0);
+        const backgroundScaleY = this.sys.game.config.height / this.textures.get('background').getSourceImage().height;
+        this.backgroundTileSprite.setScale(1, backgroundScaleY);
 
         //==============================================================
-        const map = this.make.tilemap({ key: "map", tileWidth: 16, tileHeight: 16});
+        //Tileset
+        
         const tileset = map.addTilesetImage("custom_tileset","tiles");
         const layer = map.createLayer("toplayer", tileset, 0, groundLevel);
         layer.setCollisionByExclusion(-1, true);
@@ -39,52 +48,7 @@ class Play extends Phaser.Scene {
         this.physics.world.bounds.height = map.heightInPixels;
 
         //==============================================================
-
-
-        const borderWidth = 10;
-        const topAndBottomHalfBorderColor = 0xffff00; // Yellow color
-        const bottomAndTopHalfBorderColor = 0x0000ff; // Blue color
-
-
-
-        // Get the game's canvas size
-        const canvasWidth = this.sys.game.config.width;
-        const canvasHeight = this.sys.game.config.height;
-
-        // Get the game's canvas size
-        const halfHeight = canvasHeight / 2; // Calculate the half-height for the side borders
-
-        // Draw the top border (yellow)
-        const topBorder = this.add.graphics();
-        topBorder.fillStyle(bottomAndTopHalfBorderColor, 1);
-        topBorder.fillRect(0, 0, canvasWidth, borderWidth);
-
-        // Draw the bottom border (blue)
-        const bottomBorder = this.add.graphics();
-        bottomBorder.fillStyle(topAndBottomHalfBorderColor, 1);
-        bottomBorder.fillRect(0, canvasHeight - borderWidth, canvasWidth, borderWidth);
-
-        // Draw the top half of the left border (blue)
-        const leftTopHalfBorder = this.add.graphics();
-        leftTopHalfBorder.fillStyle(bottomAndTopHalfBorderColor, 1);
-        leftTopHalfBorder.fillRect(0, 0, borderWidth, halfHeight);
-
-        // Draw the bottom half of the left border (yellow)
-        const leftBottomHalfBorder = this.add.graphics();
-        leftBottomHalfBorder.fillStyle(topAndBottomHalfBorderColor, 1);
-        leftBottomHalfBorder.fillRect(0, halfHeight, borderWidth, halfHeight);
-
-        // Draw the top half of the right border (blue)
-        const rightTopHalfBorder = this.add.graphics();
-        rightTopHalfBorder.fillStyle(bottomAndTopHalfBorderColor, 1);
-        rightTopHalfBorder.fillRect(canvasWidth - borderWidth, 0, borderWidth, halfHeight);
-
-        // Draw the bottom half of the right border (yellow)
-        const rightBottomHalfBorder = this.add.graphics();
-        rightBottomHalfBorder.fillStyle(topAndBottomHalfBorderColor, 1);
-        rightBottomHalfBorder.fillRect(canvasWidth - borderWidth, halfHeight, borderWidth, halfHeight);
-
-        //========================
+        //Player
         this.keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         this.keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -104,7 +68,22 @@ class Play extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
         this.cameras.main.setZoom(1.5);
+        const cam = this.cameras.main;
+        const zoomFactor = cam.zoom;
+        //==============================================================
 
+        this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
+        this.scoreText.setScrollFactor(0);  // Ensures the text doesn't scroll with the camera
+
+        // Create a lives text object
+        this.livesText = this.add.text(16, 56, 'Lives: 3', { fontSize: '32px', fill: '#fff' });
+        this.livesText.setScrollFactor(0); 
+
+
+
+
+        //========================
+        
 
         
     }
@@ -115,6 +94,10 @@ class Play extends Phaser.Scene {
             keyRIGHT: this.keyRIGHT,
             keyUP: this.keyUP
         });
+
+
+
+
 
     }
         

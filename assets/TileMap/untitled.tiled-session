@@ -1,4 +1,8 @@
 {
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
     "activeFile": "map1.tmx",
     "fileStates": {
         "#Custom_TileSet": {
