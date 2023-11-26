@@ -8,7 +8,7 @@ class Play extends Phaser.Scene {
         this.load.image('background', 'assets/Images/Background.png')
 
         this.load.image('tiles', 'assets/TileSet/TileMap.png');
-        this.load.image('tomato', 'assets/TileSet/Tomato.png')
+        this.load.image('tomato', 'assets/TileSet/Tomato.png');
 
         this.load.tilemapTiledJSON('map','assets/TileMap/map1.json');
 
@@ -93,7 +93,19 @@ class Play extends Phaser.Scene {
 
 
         //========================
-        
+        const pointsLayer = map.getObjectLayer('points')['objects'];
+
+        // Create a group for the points
+        this.tomatoes = this.physics.add.group({
+            allowGravity: false,
+            immovable: true
+        });
+
+        // Add each tomato object to the game
+        pointsLayer.forEach(point => {
+            const pointSprite = this.tomatoes.create(point.x, point.y - map.tileHeight, 'tomato').setOrigin(0);
+            pointSprite.body.setSize(point.width, point.height); // Adjust if your point objects have a specific size
+        });
 
         
     }
@@ -120,10 +132,6 @@ class Play extends Phaser.Scene {
             keyRIGHT: this.keyRIGHT,
             keyUP: this.keyUP
         });
-
-
-
-
 
     }
 

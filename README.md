@@ -4,7 +4,7 @@
 
 - Menu Done - [X]
 - Help Done - [X]
-- Game - Fix Camera/End of Game/Points/Value/Time - Unsure if I need should add more levels
+- Game - End of Game/Add Tomatos/Create Enemies
 - Score - Add score menu that allows players to input score, if it max, it replaces top score
 
 
