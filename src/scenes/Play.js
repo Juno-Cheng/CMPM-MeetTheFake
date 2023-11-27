@@ -9,6 +9,7 @@ class Play extends Phaser.Scene {
 
         this.load.image('tiles', 'assets/TileSet/TileMap.png');
         this.load.image('tomato', 'assets/TileSet/Tomato.png');
+        this.load.image('endTile', 'assets/TileSet/end.png');
 
         this.load.tilemapTiledJSON('map','assets/TileMap/map1.json');
 
@@ -57,7 +58,7 @@ class Play extends Phaser.Scene {
         this.keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.player = new Player(this, 100, 50, 'player');
+        this.player = new Player(this, 50, 320, 'player');
         this.player.initAnimations();
         this.cursors = this.input.keyboard.createCursorKeys();
         this.player.setBounce(0.1);
@@ -103,12 +104,36 @@ class Play extends Phaser.Scene {
             immovable: true
         });
 
+
+
         // Add each tomato object to the game
         pointsLayer.forEach(point => {
-            const pointSprite = this.tomatoes.create(point.x, point.y, 'tomato').setOrigin(0);
+            const pointSprite = this.tomatoes.create(point.x, point.y + groundLevel - 16, 'tomato').setOrigin(0);
             pointSprite.body.setSize(point.width, point.height); // Adjust if your point objects have a specific size
         });
         this.physics.add.overlap(this.player, this.tomatoes, this.collectTomato, null, this);
+
+        //========================
+
+        const endObjects = map.getObjectLayer('end').objects;
+
+        this.obj = this.physics.add.group({
+            allowGravity: false,
+            immovable: true
+        });
+
+        endObjects.forEach(endObj => {
+            const endSprite = this.obj.create(endObj.x, endObj.y + groundLevel - 16, 'endTile').setOrigin(0);
+            const hitboxWidth = endObj.width * 1.5; // Extend the width
+            const hitboxHeight = endObj.height * 1.5; // Extend the height
+            endSprite.body.setSize(hitboxWidth, hitboxHeight);
+        
+            // Optionally, you can also set an offset if the extended hitbox needs to be centered
+            const offsetX = (hitboxWidth - endObj.width) / 2;
+            const offsetY = (hitboxHeight - endObj.height) / 2;
+            endSprite.body.setOffset(-offsetX, -offsetY);
+    });
+    this.physics.add.overlap(this.player, this.obj, this.onLevelComplete, null, this);
 
         
     }
@@ -160,6 +185,31 @@ class Play extends Phaser.Scene {
         tomato.disableBody(true, true); // This hides and deactivates the tomato
         this.increaseScore(10); // Increase the score by 10, for example
         this.sound.play('pickup');
+    }
+
+    onLevelComplete() {
+        this.physics.pause();
+
+        // Display "Level Complete" message
+        const camera = this.cameras.main;
+        const centerX = camera.centerX;
+        const centerY = camera.centerY;
+
+        // Display "Level Complete" message
+        const levelCompleteText = this.add.text(centerX, centerY, 'Level Complete', { fontSize: '32px', fill: '#fff' })
+            .setOrigin(0.5)
+            .setScrollFactor(0); // Ensure the text isn't affected by camera zoom or scroll
+
+        // If you want the text to scale according to the camera zoom,
+        // you can adjust the scale of the text inversely to the camera's zoom
+        levelCompleteText.setScale(1 / camera.zoom);
+
+    
+        // Wait for 5 seconds before moving to the next level or restarting
+        this.time.delayedCall(5000, () => {
+            // Replace 'NextLevelScene' with the key of the next level scene or use 'this.scene.restart()' to restart the current level
+            this.scene.start('NextLevelScene');
+        }, [], this);
     }
 
 
