@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="250" height="25" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="74">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="250" height="25" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="76">
  <editorsettings>
   <export target="map1.json" format="json"/>
  </editorsettings>
@@ -88,5 +88,9 @@
   <object id="71" gid="89" x="3584" y="176" width="16" height="16"/>
   <object id="72" gid="89" x="3312" y="160" width="16" height="16"/>
   <object id="73" gid="89" x="3696" y="208" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="3" name="end">
+  <object id="74" gid="70" x="3872" y="272" width="16" height="16"/>
+  <object id="75" gid="70" x="3888" y="272" width="16" height="16"/>
  </objectgroup>
 </map>
