@@ -22,6 +22,7 @@ class Play extends Phaser.Scene {
         this.score = 0;
         this.lives = 3;
         this.remainingTime = 300;
+        this.hasFallen = false; 
 
         this.load.audio('pickup', 'assets/Audio/pickup.wav');
     }
@@ -161,6 +162,19 @@ class Play extends Phaser.Scene {
             keyUP: this.keyUP
         });
 
+        if (this.player.y > this.cameras.main.worldView.bottom - 16 && !this.player.hasFallen) {
+            this.player.hasFallen = true; // Set the flag
+            this.loseLife();
+        }
+    
+        // Reset the flag when the player is back in a safe position
+        if (this.player.y < this.cameras.main.worldView.bottom - 16) {
+            this.player.hasFallen = false;
+        }
+        //console.log(this.player.y);//392
+        console.log('Player Y: ' + this.player.y + ', Camera Bottom + 16: ' + (this.cameras.main.worldView.bottom-16));
+    
+
     }
 
 
@@ -174,11 +188,55 @@ class Play extends Phaser.Scene {
         this.lives -= 1;
         this.livesText.setText('Lives: ' + this.lives);
     
-        // Check for game over condition
         if (this.lives <= 0) {
-            // Handle game over (e.g., restart the scene or go to a game over scene)
-            this.scene.start('gameOverScene');
+            this.physics.pause();
+
+            // Display "GAME OVER" message
+            const camera = this.cameras.main;
+            const centerX = camera.centerX;
+            const centerY = camera.centerY;
+
+            this.add.text(centerX, centerY, 'GAME OVER', { fontSize: '32px', fill: '#fff' })
+                .setOrigin(0.5)
+                .setScrollFactor(0)
+                .setScale(1 / camera.zoom);
+
+            // Optionally, wait a few seconds before going to the game over scene
+            this.time.delayedCall(5000, () => {
+                this.scene.start('gameOverScene');
+            }, [], this);
+
+        } else {
+
+            this.player.body.enable = false;
+        this.player.setTint(0xff0000); // Apply a red tint to indicate damage
+
+        // Create a blinking effect
+        let blinkCount = 0;
+        this.player.visible = false; // Start with the player invisible
+        let blinkEvent = this.time.addEvent({
+            delay: 150,                // Blink every 150ms
+            callback: () => {
+                this.player.visible = !this.player.visible;
+                blinkCount++;
+                if (blinkCount >= 6) {
+                    blinkEvent.remove();
+                    this.player.visible = true; // Ensure player is visible after blinking
+                    this.player.clearTint();    // Remove the tint
+                    this.player.body.enable = true; // Re-enable player physics
+
+                    // Teleport the player back to the specified location
+                    this.player.setPosition(50, 320);
+                    this.player.setVelocity(0, 0);
+                    this.player.hasFallen = false;
+                }
+            },
+            callbackScope: this,
+            loop: true
+        });
+        
         }
+
     }
 
     collectTomato(player, tomato) {
