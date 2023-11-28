@@ -22,13 +22,26 @@ class Play extends Phaser.Scene {
         this.score = 0;
         this.lives = 3;
         this.remainingTime = 300;
-        this.hasFallen = false; 
+        this.hasFallen = true; 
 
         this.load.audio('pickup', 'assets/Audio/pickup.wav');
     }
     
     create() {
+        this.isLoseLifeEnabled = false; 
+        this.time.addEvent({
+            delay: 3000,
+            callback: () => {
+                this.isLoseLifeEnabled = true;
+            }
+        });
+
         
+        this.hasFallen = true;
+
+        this.time.delayedCall(3000, () => { // 2000 milliseconds = 2 seconds
+            this.hasFallen = false;
+        });
         //Background
         const map = this.make.tilemap({ key: "map", tileWidth: 16, tileHeight: 16});
         // Place the background image in our game world
@@ -59,7 +72,7 @@ class Play extends Phaser.Scene {
         this.keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.player = new Player(this, 50, 320, 'player');
+        this.player = new Player(this, 50, 300, 'player');
         this.player.initAnimations();
         this.cursors = this.input.keyboard.createCursorKeys();
         this.player.setBounce(0.1);
@@ -162,7 +175,13 @@ class Play extends Phaser.Scene {
             keyUP: this.keyUP
         });
 
-        if (this.player.y > this.cameras.main.worldView.bottom - 16 && !this.player.hasFallen) {
+        if (this.isLoseLifeEnabled && this.player.y > this.cameras.main.worldView.bottom - 16 && !this.player.hasFallen) {
+            console.log(
+                "isLoseLifeEnabled: " + this.isLoseLifeEnabled,
+                "Player Y: " + this.player.y,
+                "Camera Bottom: " + (this.cameras.main.worldView.bottom - 16),
+                "hasFallen: " + this.player.hasFallen
+            );
             this.player.hasFallen = true; // Set the flag
             this.loseLife();
         }
@@ -172,7 +191,7 @@ class Play extends Phaser.Scene {
             this.player.hasFallen = false;
         }
         //console.log(this.player.y);//392
-        console.log('Player Y: ' + this.player.y + ', Camera Bottom + 16: ' + (this.cameras.main.worldView.bottom-16));
+        //console.log('Player Y: ' + this.player.y + ', Camera Bottom + 16: ' + (this.cameras.main.worldView.bottom-16));
     
 
     }
@@ -185,6 +204,7 @@ class Play extends Phaser.Scene {
     
     // Call this method when the player loses a life
     loseLife() {
+        console.log("Lose Life");
         this.lives -= 1;
         this.livesText.setText('Lives: ' + this.lives);
     
@@ -200,21 +220,26 @@ class Play extends Phaser.Scene {
                 .setOrigin(0.5)
                 .setScrollFactor(0)
                 .setScale(1 / camera.zoom);
+            const finalScore = this.score * this.lives + this.remainingTime;
+
+            this.player.setPosition(50, 300);
+            this.player.setVelocity(0, 0);
+            this.player.hasFallen = false;
 
             // Optionally, wait a few seconds before going to the game over scene
             this.time.delayedCall(5000, () => {
-                this.scene.start('gameOverScene');
+                this.scene.start('GameOverScene', { score: finalScore });
             }, [], this);
 
         } else {
 
             this.player.body.enable = false;
-        this.player.setTint(0xff0000); // Apply a red tint to indicate damage
+            this.player.setTint(0xff0000); // Apply a red tint to indicate damage
 
-        // Create a blinking effect
-        let blinkCount = 0;
-        this.player.visible = false; // Start with the player invisible
-        let blinkEvent = this.time.addEvent({
+            // Create a blinking effect
+            let blinkCount = 0;
+            this.player.visible = false; // Start with the player invisible
+            let blinkEvent = this.time.addEvent({
             delay: 150,                // Blink every 150ms
             callback: () => {
                 this.player.visible = !this.player.visible;
@@ -226,7 +251,7 @@ class Play extends Phaser.Scene {
                     this.player.body.enable = true; // Re-enable player physics
 
                     // Teleport the player back to the specified location
-                    this.player.setPosition(50, 320);
+                    this.player.setPosition(50, 300);
                     this.player.setVelocity(0, 0);
                     this.player.hasFallen = false;
                 }
@@ -262,11 +287,11 @@ class Play extends Phaser.Scene {
         // you can adjust the scale of the text inversely to the camera's zoom
         levelCompleteText.setScale(1 / camera.zoom);
 
-    
+        const finalScore = this.score * this.lives + this.remainingTime;
         // Wait for 5 seconds before moving to the next level or restarting
         this.time.delayedCall(5000, () => {
             // Replace 'NextLevelScene' with the key of the next level scene or use 'this.scene.restart()' to restart the current level
-            this.scene.start('NextLevelScene');
+            this.scene.start('GameOverScene', { score: finalScore });
         }, [], this);
     }
 
