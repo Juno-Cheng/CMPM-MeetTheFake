@@ -14,6 +14,15 @@ class MenuScene extends Phaser.Scene {
   }
 
   create() {
+    let highScore;
+    if (this.registry.get('highScore') === undefined) {
+      this.registry.set('highScore', 0);
+      highScore = 0
+    }
+    else{
+      highScore = this.registry.get('highScore');
+    }
+
     this.cameras.main.backgroundColor.setTo(0, 0, 0);
     this.clickSound = this.sound.add('buttonPress');
 
@@ -26,7 +35,7 @@ class MenuScene extends Phaser.Scene {
     burgerBossText.setOrigin(0.5, 0.5);
 
     // Add high score text above the title
-    let highScoreText = this.add.text(config.width / 2, config.height - 400, 'High Score: 0', { font: '20px "Press Start 2P"', fill: '#ff0000' });
+    let highScoreText = this.add.text(config.width / 2, config.height - 400, 'High Score:' + highScore , { font: '20px "Press Start 2P"', fill: '#ff0000' });
     highScoreText.setOrigin(0.5, 0.5);
 
     // Add 'Insert Coin' text above the high score
