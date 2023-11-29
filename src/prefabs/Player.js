@@ -63,9 +63,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         });
 
         this.scene.anims.create({
-            key: 'attack',
-            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { start: 8, end: 9 }),
-            frameRate: 10,
+            key: 'attack-right',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { frames: [8] }),
+            frameRate: 1,
+            repeat: 0
+        });
+        this.scene.anims.create({
+            key: 'attack-left',
+            frames: this.scene.anims.generateFrameNumbers(this.texture.key, { frames: [9] }),
+            frameRate: 1,
             repeat: 0
         });
     }
@@ -73,6 +79,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     // The keys object is expected to contain keys: keyLEFT, keyRIGHT, keyUP
     update(keys) {
+        if (!this.attackCooldown){
         if (keys.keyLEFT.isDown) {
             this.setVelocityX(-this.moveSpeed);
             this.anims.play('walk-left', true);
@@ -91,6 +98,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play('idle-right', true);
             }
         }
+    }
     
         // Handle jumping
         if (keys.keyUP.isDown && this.isTouchingGround) {
@@ -98,6 +106,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.play('jump', true);
             // The flag should be reset when the player jumps
             this.isTouchingGround = false;
+            this.scene.sound.play('jump');
         }
 
         // Reset the isTouchingGround flag if the player is not on the ground
@@ -106,7 +115,57 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.isTouchingGround = false;
         }
 
+        //Handle Attack
+        if (Phaser.Input.Keyboard.JustDown(keys.keySPACE)) {
+            this.attack();
+        }
+
+
         
     }
+
+    attack() {
+        if (this.attackCooldown) {
+            return; // Exit if already in cooldown
+        }
+    
+        this.attackCooldown = true;
+    
+        // Determine the direction and play the corresponding attack animation
+        if (this.lastDirection === 'left') {
+            this.anims.play('attack-left', true);
+        } else {
+            this.anims.play('attack-right', true);
+        }
+    
+        // Create hitbox based on the direction of the attack
+        let hitboxX = this.x + (this.lastDirection === 'right' ? this.width / 2 : -this.width / 2);
+        let hitbox = this.scene.add.rectangle(
+            hitboxX, this.y, 
+            this.width, this.height, 
+            0xff0000, 0.5 // Red color for visualization
+        );
+        this.scene.physics.add.existing(hitbox, true); // 'true' for a static body
+        hitbox.body.isSensor = true; // Makes it not physically interact with objects
+    
+        // Collision with enemies
+        this.scene.physics.add.overlap(hitbox, this.scene.enemies, (hitbox, enemy) => {
+            // Handle enemy defeat
+            enemy.defeat(); // Implement this method in your enemy class
+        });
+    
+        // Remove hitbox after 1 second
+        this.scene.time.delayedCall(1000, () => {
+            hitbox.destroy();
+        });
+    
+        // Reset cooldown after 1 second
+        this.scene.time.delayedCall(1000, () => {
+            this.attackCooldown = false;
+        });
+    }
+    
+    
+
 }
 

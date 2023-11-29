@@ -25,6 +25,8 @@ class Play extends Phaser.Scene {
         this.hasFallen = true; 
 
         this.load.audio('pickup', 'assets/Audio/pickup.wav');
+        this.load.audio('death', 'assets/Audio/death.wav');
+        this.load.audio('jump', 'assets/Audio/jump.wav');
     }
     
     create() {
@@ -165,14 +167,15 @@ class Play extends Phaser.Scene {
     
     timeUp() {
         // Handle time up scenario, such as ending the game or transitioning to a game over scene
-        this.scene.start('gameOverScene');
+        this.scene.start('GameOverScene');
     }
 
     update(){
         this.player.update({
             keyLEFT: this.keyLEFT,
             keyRIGHT: this.keyRIGHT,
-            keyUP: this.keyUP
+            keyUP: this.keyUP,
+            keySPACE: this.keySPACE
         });
 
         if (this.isLoseLifeEnabled && this.player.y > this.cameras.main.worldView.bottom - 16 && !this.player.hasFallen) {
@@ -215,6 +218,7 @@ class Play extends Phaser.Scene {
             const camera = this.cameras.main;
             const centerX = camera.centerX;
             const centerY = camera.centerY;
+            this.sound.play('death');
 
             this.add.text(centerX, centerY, 'GAME OVER', { fontSize: '32px', fill: '#fff' })
                 .setOrigin(0.5)
@@ -235,6 +239,7 @@ class Play extends Phaser.Scene {
 
             this.player.body.enable = false;
             this.player.setTint(0xff0000); // Apply a red tint to indicate damage
+            this.sound.play('death');
 
             // Create a blinking effect
             let blinkCount = 0;
