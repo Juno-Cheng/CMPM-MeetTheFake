@@ -27,6 +27,7 @@ class Play extends Phaser.Scene {
         this.load.audio('pickup', 'assets/Audio/pickup.wav');
         this.load.audio('death', 'assets/Audio/death.wav');
         this.load.audio('jump', 'assets/Audio/jump.wav');
+        this.load.audio('attack', 'assets/Audio/attack.wav');
     }
     
     create() {

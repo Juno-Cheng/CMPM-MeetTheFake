@@ -134,8 +134,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // Determine the direction and play the corresponding attack animation
         if (this.lastDirection === 'left') {
             this.anims.play('attack-left', true);
+            this.scene.sound.play('attack');
         } else {
             this.anims.play('attack-right', true);
+            this.scene.sound.play('attack');
         }
     
         // Create hitbox based on the direction of the attack
