@@ -128,7 +128,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.attackCooldown) {
             return; // Exit if already in cooldown
         }
-    
+        this.setVelocityX(0);
         this.attackCooldown = true;
     
         // Determine the direction and play the corresponding attack animation
