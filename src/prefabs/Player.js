@@ -17,10 +17,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // Initialize player properties from global variables
         this.moveSpeed = playerSpeed;
         this.jumpStrength = playerJumpForce;
-        this.jumpSound = null;
         this.isTouchingGround = true;
-
-        //Add statemachine
 
     }
 
@@ -98,6 +95,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play('idle-right', true);
             }
         }
+    } else{
+        if (keys.keyLEFT.isDown) {
+            this.setVelocityX(-this.moveSpeed);
+            this.lastDirection = 'left';
+        } else if (keys.keyRIGHT.isDown) {
+            this.setVelocityX(this.moveSpeed);
+            this.lastDirection = 'right';
+        } else {
+            this.setVelocityX(0);
+            // Use if statements to determine which idle animation to play
+            if (this.lastDirection === 'left') {
+            } else {
+                // Default to idle-right if lastDirection is not 'left'
+            }
+        }
     }
     
         // Handle jumping
@@ -120,6 +132,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.attack();
         }
 
+        if (this.attackHitbox) {
+            this.attackHitbox.x = this.x + (this.lastDirection === 'right' ? this.width / 2 : -this.width / 2);
+            this.attackHitbox.y = this.y;
+        }
 
         
     }
@@ -128,7 +144,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.attackCooldown) {
             return; // Exit if already in cooldown
         }
-        this.setVelocityX(0);
         this.attackCooldown = true;
     
         // Determine the direction and play the corresponding attack animation
@@ -142,23 +157,31 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     
         // Create hitbox based on the direction of the attack
         let hitboxX = this.x + (this.lastDirection === 'right' ? this.width / 2 : -this.width / 2);
-        let hitbox = this.scene.add.rectangle(
+        //Make the hitbox move with player
+        
+        this.attackHitbox = this.scene.add.rectangle(
             hitboxX, this.y, 
             this.width, this.height, 
             0xff0000, 0.5 // Red color for visualization
         );
-        this.scene.physics.add.existing(hitbox, true); // 'true' for a static body
-        hitbox.body.isSensor = true; // Makes it not physically interact with objects
+        this.scene.physics.add.existing(this.attackHitbox, true);
+        this.attackHitbox.body.isSensor = true;
+    
+
     
         // Collision with enemies
-        this.scene.physics.add.overlap(hitbox, this.scene.enemies, (hitbox, enemy) => {
+        this.scene.physics.add.overlap(this.attackHitbox, this.scene.enemies, (hitbox, enemy) => {
             // Handle enemy defeat
             enemy.defeat(); // Implement this method in your enemy class
         });
     
         // Remove hitbox after 1 second
         this.scene.time.delayedCall(1000, () => {
-            hitbox.destroy();
+            if (this.attackHitbox) {
+                this.attackHitbox.destroy();
+                this.attackHitbox = null;
+            }
+            this.attackCooldown = false;
         });
     
         // Reset cooldown after 1 second
