@@ -1,7 +1,11 @@
 //Template Copied from "Title"
 class CreditsScene extends Phaser.Scene {
   constructor() {
-    super("CreditsScene"); // This refers to the identifier for this scene
+    super("CreditsScene"); 
+  }
+
+  preload() {
+    this.load.image('asepriteSurIcon', 'assets/Images/AsepriteSurIcon.png');
   }
 
   create() {
@@ -51,6 +55,9 @@ class CreditsScene extends Phaser.Scene {
       },
       loop: true,
     });
+
+    const logo = this.add.image(centerX, 300, 'asepriteSurIcon');
+    logo.setScale(0.02);
 
     // Add spacebar key listener
     this.spaceKey = this.input.keyboard.addKey(
