@@ -42,10 +42,15 @@ class MenuScene extends Phaser.Scene {
     let insertCoinText = this.add.text(config.width / 2, config.height - 350, 'Insert Coin - Press Space', { font: '20px "Press Start 2P"', fill: '#ff0000' });
     insertCoinText.setOrigin(0.5, 0.5);
 
+     // Add 'Press Down for Credits Coin' text above the high score
+     let creditsText = this.add.text(config.width / 2, config.height/2 + 200, 'Press Down for Credits', { font: '15px "Press Start 2P"', fill: '#ffffff' });
+     creditsText.setOrigin(0.5, 0.5);
+
     this.time.addEvent({
       delay: 500,  // Blinking interval in milliseconds
       callback: () => {
         insertCoinText.visible = !insertCoinText.visible;
+        creditsText.visible = !creditsText.visible;
       },
       loop: true
     });
@@ -127,6 +132,8 @@ class MenuScene extends Phaser.Scene {
   
 
     keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+
   }
 
   update() {
@@ -136,9 +143,14 @@ class MenuScene extends Phaser.Scene {
       this.sound.play('buttonPress');
       this.scene.start("HelpScene");
     }
+
+    if (Phaser.Input.Keyboard.JustDown(this.keyDown)) {
+      this.sound.play('buttonPress');
+      this.scene.start("CreditsScene"); // Replace "CreditsScene" with the key of your credits scene
   }
 
 
+  }
 
 }
 
