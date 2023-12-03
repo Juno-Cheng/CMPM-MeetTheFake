@@ -4,14 +4,15 @@
 
 - Menu Done - [X]
 - Help Done - [X]
-- Game - Add Enemies
-- Score - Add score menu that allows players to input score, if it max, it replaces top score
+- Game - [X]
+- Score - [X]
 
 
 
 ---
-- Fix Blur
-- Fix Attack Hitbox
+- Add Credits
+- Add Enemy
+- Done?
 
 ---
 # Overhauls
