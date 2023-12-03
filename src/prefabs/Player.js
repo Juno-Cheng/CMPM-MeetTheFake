@@ -132,9 +132,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.attack();
         }
 
+
         if (this.attackHitbox) {
-            this.attackHitbox.x = this.x + (this.lastDirection === 'right' ? this.width / 2 : -this.width / 2);
-            this.attackHitbox.y = this.y;
+            this.updateAttackHitbox();
         }
 
         
@@ -144,52 +144,56 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.attackCooldown) {
             return; // Exit if already in cooldown
         }
+    
         this.attackCooldown = true;
     
         // Determine the direction and play the corresponding attack animation
         if (this.lastDirection === 'left') {
             this.anims.play('attack-left', true);
-            this.scene.sound.play('attack');
         } else {
             this.anims.play('attack-right', true);
-            this.scene.sound.play('attack');
         }
     
-        // Create hitbox based on the direction of the attack
-        let hitboxX = this.x + (this.lastDirection === 'right' ? this.width / 2 : -this.width / 2);
-        //Make the hitbox move with player
-        
-        this.attackHitbox = this.scene.add.rectangle(
-            hitboxX, this.y, 
-            this.width, this.height, 
-            0xff0000, 0.5 // Red color for visualization
-        );
-        this.scene.physics.add.existing(this.attackHitbox, true);
-        this.attackHitbox.body.isSensor = true;
+        // Define hitbox dimensions and position
+        const hitboxOffset = this.width / 2;
+        const hitboxWidth = this.width+8; // For a full-width hitbox
+        const hitboxHeight = this.height;
+        let hitboxX = this.x + (this.lastDirection === 'right' ? hitboxOffset : -hitboxOffset);
     
-
+        // Create hitbox
+        if (!this.attackHitbox) { // Create the hitbox if it doesn't exist
+            this.attackHitbox = this.scene.add.rectangle(hitboxX, this.y, hitboxWidth, hitboxHeight, 0xff0000, 0.5);
+            this.scene.physics.add.existing(this.attackHitbox, true);
+            this.attackHitbox.body.isSensor = true;
+        }
+    
+        // Update the position of the attack hitbox every frame
+        this.updateAttackHitbox = () => {
+            if (this.attackHitbox) {
+                this.attackHitbox.x = this.x + (this.lastDirection === 'right' ? hitboxOffset : -hitboxOffset);
+                this.attackHitbox.y = this.y;
+            }
+        };
     
         // Collision with enemies
         this.scene.physics.add.overlap(this.attackHitbox, this.scene.enemies, (hitbox, enemy) => {
-            // Handle enemy defeat
-            enemy.defeat(); // Implement this method in your enemy class
+            enemy.destroy(); // Remove the enemy from the scene
         });
     
-        // Remove hitbox after 1 second
-        this.scene.time.delayedCall(1000, () => {
+        // Remove hitbox after a set duration
+        this.scene.time.delayedCall(500, () => {
             if (this.attackHitbox) {
                 this.attackHitbox.destroy();
                 this.attackHitbox = null;
             }
-            this.attackCooldown = false;
         });
     
-        // Reset cooldown after 1 second
-        this.scene.time.delayedCall(1000, () => {
+        // Reset cooldown after the same duration
+        this.scene.time.delayedCall(500, () => {
             this.attackCooldown = false;
         });
     }
-    
+
     
 
 }
