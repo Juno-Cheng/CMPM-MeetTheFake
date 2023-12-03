@@ -3,12 +3,19 @@ class Gameover extends Phaser.Scene {
         super('GameOverScene'); 
     }
 
+    preload() {
+        this.load.audio('number', 'assets/Audio/number.wav');
+    }
+
     init(data) {
         // Get the score from the passed data
         this.finalScore = data.score;
+        
+
     }
 
     create() {
+        this.scoreTickSound = this.sound.add('number', { volume: 0.5, loop: false });
         const centerX = this.cameras.main.width / 2;
         const centerY = this.cameras.main.height / 2;
     
@@ -58,6 +65,7 @@ class Gameover extends Phaser.Scene {
                 this.currentScore = this.finalScore;  // Ensure it doesn't exceed final score
                 this.scoreAnimationComplete = true;  // Stop the animation
             }
+            this.scoreTickSound.play();
     
             this.scoreText.setText(Math.round(this.currentScore).toString());
         }

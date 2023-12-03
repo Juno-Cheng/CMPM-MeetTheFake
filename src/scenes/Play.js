@@ -28,6 +28,13 @@ class Play extends Phaser.Scene {
         this.load.audio('death', 'assets/Audio/death.wav');
         this.load.audio('jump', 'assets/Audio/jump.wav');
         this.load.audio('attack', 'assets/Audio/attack.wav');
+
+        //Load Enemies:
+
+        this.load.spritesheet('red', 'assets/Enemy/red.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
     }
     
     create() {
@@ -94,15 +101,21 @@ class Play extends Phaser.Scene {
         //==============================================================
 
         
-        this.scoreText = this.add.text(144, 96, 'Score: 0', { fontSize: '16px', fill: '#fff' });
+        this.scoreText = this.add.text(144, 96, 'Score: 0', { fontSize: '14px', fill: '#fff' });
         this.scoreText.setScrollFactor(0);  // Ensures the text doesn't scroll with the camera
 
         // Create a lives text object
-        this.livesText = this.add.text(144, 120, 'Lives: 3', { fontSize: '16px', fill: '#fff' });
+        this.livesText = this.add.text(144, 120, 'Lives: 3', { fontSize: '14px', fill: '#fff' });
         this.livesText.setScrollFactor(0); 
 
-        this.timerText = this.add.text(144, 144, 'Time: 300', { fontSize: '16px', fill: '#fff' });
+        this.timerText = this.add.text(144, 144, 'Time: 300', { fontSize: '14px', fill: '#fff' });
         this.timerText.setScrollFactor(0);
+
+        //Removed Blur - High Cost do NOT USE OFTEN
+        this.scoreText.setResolution(5);
+        this.livesText.setResolution(5);
+        this.timerText.setResolution(5);
+
 
         this.time.addEvent({
             delay: 1000,
@@ -112,7 +125,7 @@ class Play extends Phaser.Scene {
         });
 
 
-        //========================
+        //===========Create Tomato Points=============
         const pointsLayer = map.getObjectLayer('points')['objects'];
 
         // Create a group for the points
@@ -130,7 +143,8 @@ class Play extends Phaser.Scene {
         });
         this.physics.add.overlap(this.player, this.tomatoes, this.collectTomato, null, this);
 
-        //========================
+        //===========Create End Area=============
+
 
         const endObjects = map.getObjectLayer('end').objects;
 
@@ -148,9 +162,44 @@ class Play extends Phaser.Scene {
             // Optionally, you can also set an offset if the extended hitbox needs to be centered
             const offsetX = (hitboxWidth - endObj.width) / 2;
             const offsetY = (hitboxHeight - endObj.height) / 2;
-            endSprite.body.setOffset(-offsetX, -offsetY);
-    });
-    this.physics.add.overlap(this.player, this.obj, this.onLevelComplete, null, this);
+            endSprite.body.setOffset(-offsetX, -offsetY); });
+
+
+        this.physics.add.overlap(this.player, this.obj, this.onLevelComplete, null, this);
+        //===========Spawn Enemies=============
+        this.enemies = this.physics.add.group();
+        
+
+        const enemyPositions = [
+            { x: 280, y: 264, time: 3 },
+            { x: 488, y: 200, time: 4 },
+            { x: 1128, y: 232, time: 5 },
+            { x: 1608, y: 296, time: 3 },
+            { x: 1864, y: 216, time: 6 },
+            { x: 2264, y: 232, time: 4 },
+            { x: 2624, y: 280, time: 2 },
+            { x: 3000, y: 248, time: 3 },
+            { x: 3234, y: 280, time: 5 } // Rounded 3233.75 to 3234
+        ];
+        
+        // Add a Red enemy at each position with their respective time
+        enemyPositions.forEach(pos => {
+            const redEnemy = new Red(this, pos.x, pos.y, 'red', pos.time);
+            redEnemy.initAnimations();
+            this.enemies.add(redEnemy);
+        });
+        
+        //Initalize Animations
+        this.enemies.getChildren().forEach(enemy => {
+            enemy.initAnimations();
+        });
+
+        // Add collision between the layer and each enemy in the group
+        this.physics.add.collider(this.enemies, layer);
+
+        // Add overlap detection between the player and each enemy in the group
+        this.physics.add.overlap(this.player, this.enemies, this.handlePlayerEnemyCollision, null, this);
+            
 
         
     }
@@ -195,8 +244,10 @@ class Play extends Phaser.Scene {
             this.player.hasFallen = false;
         }
         //console.log(this.player.y);//392
-        //console.log('Player Y: ' + this.player.y + ', Camera Bottom + 16: ' + (this.cameras.main.worldView.bottom-16));
-    
+        //console.log('Player X:' + this.player.x +  'Player Y: ' + this.player.y + ', Camera Bottom + 16: ' + (this.cameras.main.worldView.bottom-16));
+        this.enemies.getChildren().forEach(enemy => {
+            enemy.update();
+        });
 
     }
 
@@ -301,6 +352,13 @@ class Play extends Phaser.Scene {
         }, [], this);
     }
 
+    handlePlayerEnemyCollision(player, enemy) {
+        if (this.isLoseLifeEnabled){
+        console.log("Hit Enemy");
+        // Example: Player loses a life
+        this.loseLife();}
+    
+    }
 
         
 }
