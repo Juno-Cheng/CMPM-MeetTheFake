@@ -39,12 +39,12 @@ let config = {
   type: Phaser.AUTO,
   width: 640,
   height: 480,
-  scene: [MenuScene, Play, HelpScene, Gameover],
+  scene: [MenuScene, Play, HelpScene, Gameover, CreditsScene],
   physics: {
     default: 'arcade',
     arcade: {
       gravity: { y: 300 },
-      debug: true,
+      debug: false,
     },
   },
 };
