@@ -139,7 +139,7 @@ class Play extends Phaser.Scene {
         // Add each tomato object to the game
         pointsLayer.forEach(point => {
             const pointSprite = this.tomatoes.create(point.x, point.y + groundLevel - 16, 'tomato').setOrigin(0);
-            pointSprite.body.setSize(point.width, point.height); // Adjust if your point objects have a specific size
+            pointSprite.body.setSize(point.width, point.height); 
         });
         this.physics.add.overlap(this.player, this.tomatoes, this.collectTomato, null, this);
 
@@ -159,7 +159,6 @@ class Play extends Phaser.Scene {
             const hitboxHeight = endObj.height * 1.5; // Extend the height
             endSprite.body.setSize(hitboxWidth, hitboxHeight);
         
-            // Optionally, you can also set an offset if the extended hitbox needs to be centered
             const offsetX = (hitboxWidth - endObj.width) / 2;
             const offsetY = (hitboxHeight - endObj.height) / 2;
             endSprite.body.setOffset(-offsetX, -offsetY); });
@@ -340,8 +339,6 @@ class Play extends Phaser.Scene {
             .setOrigin(0.5)
             .setScrollFactor(0); // Ensure the text isn't affected by camera zoom or scroll
 
-        // If you want the text to scale according to the camera zoom,
-        // you can adjust the scale of the text inversely to the camera's zoom
         levelCompleteText.setScale(1 / camera.zoom);
 
         const finalScore = this.score * this.lives + this.remainingTime;

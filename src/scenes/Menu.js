@@ -144,9 +144,10 @@ class MenuScene extends Phaser.Scene {
       this.scene.start("HelpScene");
     }
 
+    //If Keydown is Pressed
     if (Phaser.Input.Keyboard.JustDown(this.keyDown)) {
       this.sound.play('buttonPress');
-      this.scene.start("CreditsScene"); // Replace "CreditsScene" with the key of your credits scene
+      this.scene.start("CreditsScene"); 
   }
 
 

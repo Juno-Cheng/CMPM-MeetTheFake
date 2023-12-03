@@ -122,7 +122,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         // Reset the isTouchingGround flag if the player is not on the ground
-        // This should be the only place where you set this to false
         if (!this.body.blocked.down && this.body.velocity.y !== 0) {
             this.isTouchingGround = false;
         }
