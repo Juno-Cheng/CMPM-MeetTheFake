@@ -36,9 +36,9 @@ class Play extends Phaser.Scene {
     });
 
     this.load.spritesheet("yellow", "assets/Enemy/yellow.png", {
-        frameWidth: 32,
-        frameHeight: 32,
-      });
+      frameWidth: 32,
+      frameHeight: 32,
+    });
   }
 
   create() {
@@ -220,13 +220,13 @@ class Play extends Phaser.Scene {
       { x: 2264, y: 232, time: 4 },
       { x: 2624, y: 280, time: 2 },
       { x: 3000, y: 248, time: 3 },
-      { x: 3234, y: 280, time: 5 }
+      { x: 3234, y: 280, time: 5 },
     ];
 
     enemyPositions.forEach((pos) => {
       // Randomly choose 'red' or 'yellow'
-      const color = Math.random() < 0.5 ? 'red' : 'yellow';
-      const enemyClass = color === 'red' ? Red : Yellow;
+      const color = Math.random() < 0.5 ? "red" : "yellow";
+      const enemyClass = color === "red" ? Red : Yellow;
 
       const enemy = new enemyClass(this, pos.x, pos.y, color, pos.time);
       enemy.initAnimations();
@@ -249,8 +249,6 @@ class Play extends Phaser.Scene {
       null,
       this
     );
-
-    
   }
 
   updateTimer() {
@@ -422,26 +420,26 @@ class Play extends Phaser.Scene {
   handleEnemyDefeat(x, y, points, color) {
     // Update the score
     this.score += points;
-    this.scoreText.setText('Score: ' + this.score);
+    this.scoreText.setText("Score: " + this.score);
     this.sound.play("kill");
 
     // Create a text object at the enemy's position to display the points
-    const pointsText = this.add.text(x, y, '+' + points, { fontSize: '8px', fill: '#fff' });
+    const pointsText = this.add.text(x, y, "+" + points, {
+      fontSize: "8px",
+      fill: "#fff",
+    });
     pointsText.setOrigin(0.5, 0.5);
 
     // Create a fade-out effect for the points text
     this.tweens.add({
-        targets: pointsText,
-        y: y - 50,
-        alpha: 0,
-        duration: 1000,
-        ease: 'Power1',
-        onComplete: () => {
-            pointsText.destroy();
-        }
+      targets: pointsText,
+      y: y - 50,
+      alpha: 0,
+      duration: 1000,
+      ease: "Power1",
+      onComplete: () => {
+        pointsText.destroy();
+      },
     });
-
-}
-
-
+  }
 }
