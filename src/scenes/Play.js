@@ -27,7 +27,7 @@ class Play extends Phaser.Scene {
     this.load.audio("death", "assets/Audio/death.wav");
     this.load.audio("jump", "assets/Audio/jump.wav");
     this.load.audio("attack", "assets/Audio/attack.wav");
-
+    this.load.audio("kill", "assets/Audio/kill.wav");
     //Load Enemies:
 
     this.load.spritesheet("red", "assets/Enemy/red.png", {
@@ -250,6 +250,7 @@ class Play extends Phaser.Scene {
       this
     );
 
+    
   }
 
   updateTimer() {
@@ -418,26 +419,29 @@ class Play extends Phaser.Scene {
     }
   }
 
-  handleEnemyDefeat(x, y, points) {
+  handleEnemyDefeat(x, y, points, color) {
     // Update the score
     this.score += points;
     this.scoreText.setText('Score: ' + this.score);
+    this.sound.play("kill");
 
     // Create a text object at the enemy's position to display the points
     const pointsText = this.add.text(x, y, '+' + points, { fontSize: '8px', fill: '#fff' });
-    pointsText.setOrigin(0.5, 0.5); // Center the text on the position
+    pointsText.setOrigin(0.5, 0.5);
 
-    // Create a fade-out effect
+    // Create a fade-out effect for the points text
     this.tweens.add({
         targets: pointsText,
-        y: y - 50, // Move up by 50 pixels
-        alpha: 0, // Fade out
-        duration: 1000, // Duration of the tween in milliseconds
+        y: y - 50,
+        alpha: 0,
+        duration: 1000,
         ease: 'Power1',
         onComplete: () => {
-            pointsText.destroy(); // Destroy the text object after the animation
+            pointsText.destroy();
         }
     });
-  }
+
+}
+
 
 }

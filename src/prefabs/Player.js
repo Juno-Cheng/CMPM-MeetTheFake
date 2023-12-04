@@ -196,19 +196,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       }
     };
 
-    this.scene.physics.add.overlap(
-      this.attackHitbox,
-      this.scene.enemies,
-      (hitbox, enemy) => {
-        // Calculate the points to be awarded for defeating the enemy
-        const points = 100; // Replace with your points logic
+    this.scene.physics.add.overlap(this.attackHitbox, this.scene.enemies, (hitbox, enemy) => {
+      const points = 100; // Points logic
+      const enemyColor = enemy.texture.key.includes('red') ? 'red' : 'yellow'; // Determine color from enemy texture key
 
-        // Call the method from the scene to handle the enemy defeat
-        this.scene.handleEnemyDefeat(enemy.x, enemy.y, points);
-
-        enemy.destroy(); // Remove the enemy from the scene
-      }
-    );
+      this.scene.handleEnemyDefeat(enemy.x, enemy.y, points, enemyColor);
+      enemy.destroy(); // Remove the enemy
+  });
+  
     // Remove hitbox after a set duration
     this.scene.time.delayedCall(500, () => {
       if (this.attackHitbox) {
