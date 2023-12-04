@@ -424,7 +424,7 @@ class Play extends Phaser.Scene {
     this.scoreText.setText('Score: ' + this.score);
 
     // Create a text object at the enemy's position to display the points
-    const pointsText = this.add.text(x, y, '+' + points, { fontSize: '16px', fill: '#fff' });
+    const pointsText = this.add.text(x, y, '+' + points, { fontSize: '8px', fill: '#fff' });
     pointsText.setOrigin(0.5, 0.5); // Center the text on the position
 
     // Create a fade-out effect
