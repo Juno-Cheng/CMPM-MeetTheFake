@@ -10,9 +10,10 @@
 
 
 ---
-- Add Credits
-- Add Enemy
-- Done?
+# Todo
+- Add Quarter Couter
+- Upodate Help Scene
+- Do writeup
 
 ---
 # Overhauls
