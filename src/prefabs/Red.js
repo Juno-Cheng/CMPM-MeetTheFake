@@ -44,7 +44,7 @@ class Red extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        console.log('Current Texture:', this.texture.key, 'Frame:', this.frame.name);
+        //console.log('Current Texture:', this.texture.key, 'Frame:', this.frame.name);
         // Set the velocity and play the animation based on the movingLeft flag
         this.setVelocityX(this.movingLeft ? -this.moveSpeed : this.moveSpeed);
 
