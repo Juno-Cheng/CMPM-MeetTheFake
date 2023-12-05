@@ -39,6 +39,7 @@ class Play extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
+    this.end = false;
   }
 
   create() {
@@ -89,7 +90,7 @@ class Play extends Phaser.Scene {
     const layer = map.createLayer("toplayer", tileset, 0, groundLevel);
     layer.setCollisionByExclusion(-1, true);
 
-    this.physics.world.createDebugGraphic();
+    //this.physics.world.createDebugGraphic();
     this.physics.world.bounds.width = map.widthInPixels;
     this.physics.world.bounds.height = map.heightInPixels;
 
@@ -123,6 +124,7 @@ class Play extends Phaser.Scene {
     const cam = this.cameras.main;
     const zoomFactor = cam.zoom;
     //==============================================================
+    //Score/Lives/Time
 
     this.scoreText = this.add.text(144, 96, "Score: 0", {
       fontSize: "14px",
@@ -180,7 +182,7 @@ class Play extends Phaser.Scene {
     );
 
     //===========Create End Area=============
-
+    //Adds collision box to End Objects
     const endObjects = map.getObjectLayer("end").objects;
 
     this.obj = this.physics.add.group({
@@ -257,22 +259,23 @@ class Play extends Phaser.Scene {
 
     // If the countdown reaches zero, end the game
     if (this.remainingTime <= 0) {
-      this.timeUp(); // Call a method to handle what happens when time is up
+
+      this.onLevelComplete(); // Call a method to handle what happens when time is up
     }
   }
 
-  timeUp() {
-    // Handle time up scenario, such as ending the game or transitioning to a game over scene
-    this.scene.start("GameOverScene");
-  }
+
 
   update() {
+    //Updates Player Movement
+    if (this.end == false){
     this.player.update({
       keyLEFT: this.keyLEFT,
       keyRIGHT: this.keyRIGHT,
       keyUP: this.keyUP,
       keySPACE: this.keySPACE,
-    });
+    });}
+
 
     if (
       this.isLoseLifeEnabled &&
@@ -319,6 +322,8 @@ class Play extends Phaser.Scene {
       const centerX = camera.centerX;
       const centerY = camera.centerY;
       this.sound.play("death");
+      this.end = true;
+      
 
       this.add
         .text(centerX, centerY, "GAME OVER", { fontSize: "32px", fill: "#fff" })
@@ -327,9 +332,9 @@ class Play extends Phaser.Scene {
         .setScale(1 / camera.zoom);
       const finalScore = this.score * this.lives + this.remainingTime;
 
-      this.player.setPosition(50, 300);
       this.player.setVelocity(0, 0);
       this.player.hasFallen = false;
+      this.end = true;
 
       // Optionally, wait a few seconds before going to the game over scene
       this.time.delayedCall(
@@ -371,14 +376,17 @@ class Play extends Phaser.Scene {
     }
   }
 
+  //Function called when Tomato is picked up
   collectTomato(player, tomato) {
     tomato.disableBody(true, true); // This hides and deactivates the tomato
     this.increaseScore(10); // Increase the score by 10, for example
     this.sound.play("pickup");
   }
 
+  //Checks if Game has Ended
   onLevelComplete() {
     this.physics.pause();
+    this.end = true;
 
     // Display "Level Complete" message
     const camera = this.cameras.main;
@@ -409,6 +417,7 @@ class Play extends Phaser.Scene {
     );
   }
 
+  //Function that handles Enemy Collision
   handlePlayerEnemyCollision(player, enemy) {
     if (this.isLoseLifeEnabled) {
       console.log("Hit Enemy");

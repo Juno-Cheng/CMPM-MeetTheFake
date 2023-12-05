@@ -63,7 +63,7 @@ class MenuScene extends Phaser.Scene {
       { font: '15px "Press Start 2P"', fill: "#ffffff" }
     );
     creditsText.setOrigin(0.5, 0.5);
-
+    
     this.time.addEvent({
       delay: 500, // Blinking interval in milliseconds
       callback: () => {

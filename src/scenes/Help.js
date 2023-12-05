@@ -85,12 +85,15 @@ class HelpScene extends Phaser.Scene {
     );
     text.setOrigin(0.5); // Center the text
 
+    //Blinking Text to notify User to Continue
     let insertCoinText = this.add.text(
       config.width / 2,
       config.height / 2 + 100,
       " Press Space to Continue",
       { font: '20px "Press Start 2P"', fill: "#ff0000" }
     );
+
+    //Added Text Event
     insertCoinText.setOrigin(0.5, 0.5);
     this.time.addEvent({
       delay: 500, // Blinking interval in milliseconds

@@ -19,7 +19,7 @@ class CreditsScene extends Phaser.Scene {
       .text(centerX, 100, "Credits", { font: "32px Arial", fill: "#ffffff" })
       .setOrigin(0.5);
 
-    // Add credits content here
+    // Add credits content 
     const creditsText = [
       "Game/Art/Audio Design: Jonathan Cheng",
       "Artwork: Aseprite",
@@ -35,7 +35,6 @@ class CreditsScene extends Phaser.Scene {
         .setOrigin(0.5);
     });
 
-    //Add logos
 
     // Add "Press Space to return to menu" text at the bottom of the screen
     let returnText = this.add
@@ -55,6 +54,8 @@ class CreditsScene extends Phaser.Scene {
       },
       loop: true,
     });
+
+    //Add logos
 
     const logo = this.add.image(centerX, 300, "asepriteSurIcon");
     logo.setScale(0.02);

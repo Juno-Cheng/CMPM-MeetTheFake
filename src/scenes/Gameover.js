@@ -68,6 +68,8 @@ class Gameover extends Phaser.Scene {
       this.scene.start("MenuScene");
     }
 
+
+    //Did not use Tween as the function 
     if (!this.scoreAnimationComplete) {
       this.currentScore += this.scoreIncrement;
 

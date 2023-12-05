@@ -20,6 +20,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.isTouchingGround = true;
   }
 
+  //Initialize & Declare Animations 
   initAnimations() {
     this.scene.anims.create({
       key: "idle-right",
@@ -90,6 +91,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
   // The keys object is expected to contain keys: keyLEFT, keyRIGHT, keyUP
   update(keys) {
+
+    //If not attacking - Allows Animations of Moving/Idle to play
     if (!this.attackCooldown) {
       if (keys.keyLEFT.isDown) {
         this.setVelocityX(-this.moveSpeed);
@@ -109,7 +112,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
           this.anims.play("idle-right", true);
         }
       }
-    } else {
+    } else {// If Attacking, allow movement
       if (keys.keyLEFT.isDown) {
         this.setVelocityX(-this.moveSpeed);
         this.lastDirection = "left";
@@ -150,6 +153,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  //Attack Function - Creates HitBox at player
+
   attack() {
     if (this.attackCooldown) {
       return; // Exit if already in cooldown
@@ -180,7 +185,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         hitboxWidth,
         hitboxHeight,
         0xff0000,
-        0.5
+        0
       );
       this.scene.physics.add.existing(this.attackHitbox, true);
       this.attackHitbox.body.isSensor = true;
