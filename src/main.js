@@ -1,7 +1,21 @@
 /***************************************************
 Jonathan Cheng
+Meet The Fake - 12/4/2023
+CMPM 120
 
+Phaser's major components (5/5):
+- Physics System - (Gravity/Movement of "Mario") 
+- Cameras - (Camera is Following Player in Play.js in Line 89-91)
+- TileMap - (Used Tiler to develop and create game)
+- Animation - (Created different animations using frames in Player.js )
+- Text Objects - (Created Text using Font)
 
+Game reflects the artistic style I was going for which was a 16/32 bit arcade game machine from the TV series Bob's Burger, the Game "Boss Burger."
+According to the show and wiki, "Boss Burger" is an copied verison of Mario with several modification. In this assignment, I used several different features
+such as Tiled and Asperite to create a fake verison of the game. Overall, I feel satifisied with the game and the effort and work I have put in it.
+
+ 
+========================================================
 === LOOK & FEEL ===
 
 +5 The game includes a title screen, some means to view credits, some means of completion/conclusion, and the ability to restart from within the game. (These criteria are judged relative to your specific game, genre, artistic tone, etc.)
@@ -23,17 +37,7 @@ Jonathan Cheng
 === POLISH & STYLE ===
 
 +5 Your game has that extra bit of polish, creativity, technical prowess, and/or originality that helps it stand out from other games. We use this criteria as a grade "tilt" to reward games that we really enjoyed, that are bold and inventive, that adapt their target media thoughtfully, that demonstrate strong technical skills, and/or went beyond the stated objectives of the assignment. Feel free to add a comment to your main.js/Canvas submission if you wish to point out any features that we might miss.
-========================================================
-Phaser's major components (5/5):
-- Physics System - (Gravity/Movement of "Mario") 
-- Cameras - (Camera is Following Player in Play.js in Line 89-91)
-- TileMap - (Used Tiler to develop and create game)
-- Animation - (Created different animations using frames in Player.js )
-- Text Objects - (Created Text using Font)
-
-
-
-
+...
 ****************************************************/
 let config = {
   type: Phaser.AUTO,
