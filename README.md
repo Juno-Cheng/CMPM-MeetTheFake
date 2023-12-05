@@ -11,7 +11,6 @@
 
 ---
 # Todo
-- Add Quarter Couter
 - Update Help Scene - [X]
 - Do writeup
 
