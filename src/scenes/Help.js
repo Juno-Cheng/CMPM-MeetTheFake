@@ -69,6 +69,7 @@ class HelpScene extends Phaser.Scene {
     let helpText =
       "Use the ARROW keys to move the character.\n" +
       "Press UP to jump.\n" +
+      "Press Space to Attack\n" +
       "Reach the end of the map.";
     let textStyle = {
       font: "20px Arial",

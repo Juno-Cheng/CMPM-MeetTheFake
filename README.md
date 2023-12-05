@@ -12,7 +12,7 @@
 ---
 # Todo
 - Add Quarter Couter
-- Upodate Help Scene
+- Update Help Scene - [X]
 - Do writeup
 
 ---
