@@ -8,15 +8,11 @@
 - Score - [X]
 
 
-
 ---
 # Todo
+
 - Update Help Scene - [X]
 - Do writeup
 
 ---
-# Overhauls
-- Changed Planned Enemies - Removing Carrot/Sausage Back to Original Game Enemies
-- Added 2nd Level (Huge Maybe - If time avaliable)
-
 https://juno-cheng.github.io/CMPM-MeetTheFake/
