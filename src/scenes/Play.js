@@ -89,7 +89,7 @@ class Play extends Phaser.Scene {
     const tileset = map.addTilesetImage("custom_tileset", "tiles");
     const layer = map.createLayer("toplayer", tileset, 0, groundLevel);
     layer.setCollisionByExclusion(-1, true);
-
+    //Debug Tools
     //this.physics.world.createDebugGraphic();
     this.physics.world.bounds.width = map.widthInPixels;
     this.physics.world.bounds.height = map.heightInPixels;
