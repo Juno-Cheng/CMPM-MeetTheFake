@@ -2,7 +2,7 @@ class Play extends Phaser.Scene {
   constructor() {
     super("playScene");
   }
-  preload() {
+  h preload() {
     //Load Background
     this.load.image("background", "assets/Images/Background.png");
 
@@ -43,6 +43,8 @@ class Play extends Phaser.Scene {
   }
 
   create() {
+
+    //===========Setting - I-Frames for the first few Seconds=============
     this.isLoseLifeEnabled = false;
     this.time.addEvent({
       delay: 3000,
@@ -57,7 +59,8 @@ class Play extends Phaser.Scene {
       // 2000 milliseconds = 2 seconds
       this.hasFallen = false;
     });
-    //Background
+
+    //===========Background=============
     const map = this.make.tilemap({
       key: "map",
       tileWidth: 16,
@@ -83,8 +86,7 @@ class Play extends Phaser.Scene {
       this.textures.get("background").getSourceImage().height;
     this.backgroundTileSprite.setScale(1, backgroundScaleY);
 
-    //==============================================================
-    //Tileset
+    //===========Tileset=============
 
     const tileset = map.addTilesetImage("custom_tileset", "tiles");
     const layer = map.createLayer("toplayer", tileset, 0, groundLevel);
