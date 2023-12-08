@@ -48,16 +48,13 @@ class Play extends Phaser.Scene {
     this.isLoseLifeEnabled = false;//I-Frames Enabled - Player Won't Lose Life
     this.hasFallen = true;//More I-Frames - Stops function calls
 
-    this.time.addEvent({
+    this.time.addEvent({// After 3 seconds, remove I-Frames from User
       delay: 3000,
       callback: () => {
         this.isLoseLifeEnabled = true;
+        this.hasFallen = false;
         
       },
-    });
-
-    this.time.delayedCall(3000, () => {//After 3 seconds, player's i-frames are removed. 
-      this.hasFallen = false;
     });
 
     //===========Background=====================================================
@@ -423,11 +420,16 @@ class Play extends Phaser.Scene {
 
   //Function that handles Enemy Collision
   handlePlayerEnemyCollision(player, enemy) {
+    
     if (this.isLoseLifeEnabled) {
       console.log("Hit Enemy");
       // Example: Player loses a life
       this.loseLife();
     }
+    // Enable losing life again after 3 seconds
+    setTimeout(() => {
+      this.isLoseLifeEnabled = true;
+  }, 3000); // 3000 milliseconds = 3 seconds
   }
 
   handleEnemyDefeat(x, y, points, color) {
