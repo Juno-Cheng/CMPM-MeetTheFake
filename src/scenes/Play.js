@@ -2,7 +2,8 @@ class Play extends Phaser.Scene {
   constructor() {
     super("playScene");
   }
-  h preload() {
+
+  preload() {
     //Load Background
     this.load.image("background", "assets/Images/Background.png");
 
@@ -43,24 +44,23 @@ class Play extends Phaser.Scene {
   }
 
   create() {
-
     //===========Setting - I-Frames for the first few Seconds=============
-    this.isLoseLifeEnabled = false;
+    this.isLoseLifeEnabled = false;//I-Frames Enabled - Player Won't Lose Life
+    this.hasFallen = true;//More I-Frames - Stops function calls
+
     this.time.addEvent({
       delay: 3000,
       callback: () => {
         this.isLoseLifeEnabled = true;
+        
       },
     });
 
-    this.hasFallen = true;
-
-    this.time.delayedCall(3000, () => {
-      // 2000 milliseconds = 2 seconds
+    this.time.delayedCall(3000, () => {//After 3 seconds, player's i-frames are removed. 
       this.hasFallen = false;
     });
 
-    //===========Background=============
+    //===========Background=====================================================
     const map = this.make.tilemap({
       key: "map",
       tileWidth: 16,
@@ -86,7 +86,7 @@ class Play extends Phaser.Scene {
       this.textures.get("background").getSourceImage().height;
     this.backgroundTileSprite.setScale(1, backgroundScaleY);
 
-    //===========Tileset=============
+    //===========Tilese=====================================================
 
     const tileset = map.addTilesetImage("custom_tileset", "tiles");
     const layer = map.createLayer("toplayer", tileset, 0, groundLevel);
@@ -159,7 +159,7 @@ class Play extends Phaser.Scene {
       loop: true,
     });
 
-    //===========Create Tomato Points=============
+    //===========Create Tomato Points=====================================================
     const pointsLayer = map.getObjectLayer("points")["objects"];
 
     // Create a group for the points
@@ -183,7 +183,7 @@ class Play extends Phaser.Scene {
       this
     );
 
-    //===========Create End Area=============
+    //===========Create End Area=====================================================
     //Adds collision box to End Objects
     const endObjects = map.getObjectLayer("end").objects;
 
@@ -212,7 +212,7 @@ class Play extends Phaser.Scene {
       null,
       this
     );
-    //===========Spawn Enemies=============
+    //===========Spawn Enemies=====================================================
     this.enemies = this.physics.add.group();
 
     const enemyPositions = [
@@ -255,6 +255,8 @@ class Play extends Phaser.Scene {
     );
   }
 
+
+  //Function that is continously called to update the overall timer in the game scene
   updateTimer() {
     this.remainingTime -= 1; // Decrement the remaining time by one second
     this.timerText.setText("Time: " + this.remainingTime);
@@ -265,8 +267,6 @@ class Play extends Phaser.Scene {
       this.onLevelComplete(); // Call a method to handle what happens when time is up
     }
   }
-
-
 
   update() {
     //Updates Player Movement
@@ -305,6 +305,7 @@ class Play extends Phaser.Scene {
     });
   }
 
+  //Function that takes in an amount of points and updates text object and score. 
   increaseScore(points) {
     this.score += points;
     this.scoreText.setText("Score: " + this.score);
@@ -312,9 +313,10 @@ class Play extends Phaser.Scene {
 
   // Call this method when the player loses a life
   loseLife() {
+    if (this.lives > 0) {
     console.log("Lose Life");
     this.lives -= 1;
-    this.livesText.setText("Lives: " + this.lives);
+    this.livesText.setText("Lives: " + this.lives);}
 
     if (this.lives <= 0) {
       this.physics.pause();
@@ -331,7 +333,7 @@ class Play extends Phaser.Scene {
         .text(centerX, centerY, "GAME OVER", { fontSize: "32px", fill: "#fff" })
         .setOrigin(0.5)
         .setScrollFactor(0)
-        .setScale(1 / camera.zoom);
+        .setScale(1 / camera.zoom).setResolution(5);
       const finalScore = this.score * this.lives + this.remainingTime;
 
       this.player.setVelocity(0, 0);
